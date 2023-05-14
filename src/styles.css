@@ -1,1 +1,62 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .uiFieldFocus {
+    @apply border-sky-500;
+  }
+
+  .uiFieldError {
+    @apply bg-red-50 border border-red-700 shadow-red-400/50;
+  }
+
+  .uiField[disabled] {
+    @apply text-neutral-600/50 bg-neutral-100/25 border border-neutral-400/50 shadow-neutral-400/50 pointer-events-none;
+  }
+
+  .uiField {
+    @apply w-full flex mb-1 py-3 bg-input-bg rounded-md border border-surface-2 ring-0 ring-transparent outline-0
+    outline-offset-0 outline-transparent  shadow-inner-md text-left focus:uiFieldFocus order-2;
+  }
+
+  .uiLabel {
+    @apply flex ml-4 mb-1 text-neutral-700 text-sm font-medium order-1;
+  }
+
+  .uiField[required] + .uiLabel::after {
+    @apply content-['*'] ml-0.5 text-red-700;
+  }
+
+  .uiFieldError + .uiLabel {
+    @apply text-red-700;
+  }
+
+  .uiFieldDisabled + .uiLabel {
+    @apply text-neutral-700/50;
+  }
+
+  .uiHint {
+    @apply block ml-4 mb-1 font-thin text-neutral-500 text-sm tracking-wide order-3;
+  }
+
+  .uiInput {
+    @apply mb-1 px-3
+  }
+
+  .caret {
+    @apply h-5 w-px bg-neutral-300 pointer-events-none;
+  }
+}
+
+.uiField.ng-invalid.ng-touched:not(.ng-pristine) {
+  @apply uiFieldError;
+}
+
+.ng-submitted .ng-invalid {
+  @apply uiFieldError;
+}
+
+.uiError .ng-invalid {
+  @apply uiFieldError;
+}

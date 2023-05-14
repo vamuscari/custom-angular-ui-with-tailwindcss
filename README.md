@@ -1,27 +1,65 @@
-# CustomAngularUiWithTailwindcss
+# Custom Angular UI With Tailwindcss
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.1.
+This project was made to show how to build your own ui components in angular with tailwindcss. 
+Set up a new angular project or jump into one that you already have. 
+Why do this at all? well if Angular Material fits your needs then go for that. The problem with Angular Material is the moment you want some sort of custom styling then angular material is the worst to work with.
+From my experience at this point. I won't even use AM anymore because it tends to be all or nothing kind of system and it's better to just do the leg work up front and save yourself a lot of pain down the road.
 
-## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Installing Tailwind
 
-## Code scaffolding
+To get started [install tailwindcss](https://tailwindcss.com/docs/installation) in Angualar
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+```shell
+npm install -D tailwindcss
+npx tailwindcss init
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+now change the tailwind config file.
+```javascript
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./src/**/*.{html,js,ts}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
 
-## Running unit tests
+finally, in src/styles.css add the following:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
 
-## Running end-to-end tests
+we should now be able to start using tailwind!
+If you started a new project, go ahead and delete everything from app.component.html then paste
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```html
+<h1 class="text-3xl font-bold underline">
+  Hello world!
+</h1>
+```
+ which should give you something similar to this. 
 
-## Further help
+ <blockquote><h1><strong><u>Hello World!</u></strong></h1></blockquote>
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+If not check your version of angular and tailwind
+
+I recommend installing the [prettier](https://tailwindcss.com/blog/automatic-class-sorting-with-prettier) plugin, because tailwind does have a order it is supposed to be written in.
+
+I also recommend installing tailwind forms. Its the easiest way to get to keep formatting consistent when making using input.
+
+## UI Directives
+
+Lets make some new folders in `src`:
+* ui
+  + directives
+  + components
+
+We are going to start with the input directive.
+
