@@ -1,6 +1,7 @@
 {
   "name": "custom-angular-ui-with-tailwindcss",
   "version": "0.0.0",
+  "author": "Van Muscari",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
