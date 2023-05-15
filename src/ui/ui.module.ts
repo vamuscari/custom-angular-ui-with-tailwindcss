@@ -7,8 +7,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IconDirective } from './directives/icon.directive';
 import { UiDate } from './components/ui-date.component';
 import { UiSelect } from './components/ui-select.component';
+import { UiInput } from './directives/input.directive';
 
-const components = [IconDirective, UiDate, UiSelect];
+const components = [IconDirective, UiInput, UiDate, UiSelect];
 
 const modules = [
   CommonModule,

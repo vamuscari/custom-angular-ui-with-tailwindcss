@@ -1,7 +1,5 @@
 import {
-  AfterViewInit,
   Directive,
-  DoCheck,
   ElementRef,
   Input,
   OnChanges,
@@ -23,25 +21,19 @@ import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
   exportAs: 'uiInput',
   host: {
     class: 'uiField uiInput',
-    '[id]': 'id',
     '[disabled]': 'disabled',
     '[required]': 'required',
-    '[attr.name]': 'name || null',
     '[attr.label]': 'label || null',
     '[attr.aria-invalid]': '(empty && required) ? null : errorState',
     '[attr.aria-required]': 'required',
     '[attr.aria-label]': 'label || null',
-    '[attr.id]': 'id',
-    '(focus)': '_focusChanged(true)',
-    '(blur)': '_focusChanged(false)',
-    '(input)': '_onInput()',
   },
   providers: [
     { provide: NG_VALUE_ACCESSOR, multi: true, useExisting: UiInput },
     { provide: NG_VALIDATORS, multi: true, useExisting: UiInput },
   ],
 })
-export class UiInput implements OnChanges, OnDestroy, AfterViewInit, DoCheck {
+export class UiInput implements OnChanges, OnDestroy {
   touched = false;
   valid = true;
   stateChanges = new Subject<void>();
@@ -109,11 +101,13 @@ export class UiInput implements OnChanges, OnDestroy, AfterViewInit, DoCheck {
   private _value: any;
 
   private _labelElement: HTMLLabelElement;
+  private _parentFormGroup;
 
   constructor(
     @Optional() _parentFormGroup: FormGroupDirective,
     private _elementRef: ElementRef<HTMLElement>
   ) {
+    this._parentFormGroup = _parentFormGroup;
     const element = this._elementRef.nativeElement;
     const nodeName = element.nodeName.toLowerCase();
 
