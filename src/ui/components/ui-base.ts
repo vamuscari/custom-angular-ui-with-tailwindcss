@@ -1,7 +1,6 @@
+import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
-  AfterViewInit,
-  Directive,
-  DoCheck,
+  Component,
   ElementRef,
   Input,
   OnChanges,
@@ -11,37 +10,35 @@ import {
 } from '@angular/core';
 import {
   AbstractControl,
+  ControlValueAccessor,
   FormGroupDirective,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 
-@Directive({
-  selector: `input[uiInput], textarea[uiInput]`,
-  exportAs: 'uiInput',
+@Component({
+  template: ``,
   host: {
-    class: 'uiField uiInput',
-    '[id]': 'id',
+    class: 'relative uiField',
     '[disabled]': 'disabled',
     '[required]': 'required',
-    '[attr.name]': 'name || null',
     '[attr.label]': 'label || null',
+    '[attr.tabindex]': '0',
+    // Only mark the input as invalid for assistive technology if it has a value since the
+    // state usually overlaps with `aria-required` when the input is empty and can be redundant.
     '[attr.aria-invalid]': '(empty && required) ? null : errorState',
     '[attr.aria-required]': 'required',
     '[attr.aria-label]': 'label || null',
-    '[attr.id]': 'id',
-    '(focus)': '_focusChanged(true)',
-    '(blur)': '_focusChanged(false)',
-    '(input)': '_onInput()',
   },
   providers: [
-    { provide: NG_VALUE_ACCESSOR, multi: true, useExisting: UiInput },
-    { provide: NG_VALIDATORS, multi: true, useExisting: UiInput },
+    { provide: NG_VALUE_ACCESSOR, multi: true, useExisting: UiBase },
+    { provide: NG_VALIDATORS, multi: true, useExisting: UiBase },
   ],
 })
-export class UiInput implements OnChanges, OnDestroy, AfterViewInit, DoCheck {
+export abstract class UiBase<T>
+  implements ControlValueAccessor, OnChanges, OnDestroy
+{
   touched = false;
   valid = true;
   stateChanges = new Subject<void>();
@@ -97,23 +94,25 @@ export class UiInput implements OnChanges, OnDestroy, AfterViewInit, DoCheck {
   private _disabled = false;
 
   @Input()
-  get value(): any {
+  get value(): T {
     return this._value;
   }
-  set value(val: any) {
+  set value(val: T) {
     this._value = val;
     this.stateChanges.next();
     this.onChange(val);
   }
-  // @ts-ignore
-  private _value: any;
+  protected _value!: T;
 
   private _labelElement: HTMLLabelElement;
+  private _parentFormGroup;
 
   constructor(
     @Optional() _parentFormGroup: FormGroupDirective,
     private _elementRef: ElementRef<HTMLElement>
   ) {
+    if (_parentFormGroup) this._parentFormGroup = _parentFormGroup;
+
     const element = this._elementRef.nativeElement;
     const nodeName = element.nodeName.toLowerCase();
 
@@ -132,13 +131,13 @@ export class UiInput implements OnChanges, OnDestroy, AfterViewInit, DoCheck {
   get errorState(): boolean {
     return (
       (!this.valid && this.touched) ||
-      (!this.valid && this._parentFormGroup?.submitted)
+      (!this.valid &&
+        this._parentFormGroup!! &&
+        this._parentFormGroup?.submitted)
     );
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // Updating the disabled state is handled by `mixinDisabled`, but we need to additionally let
-    // the parent form field know to run change detection when the disabled state changes.
     if (changes['disabled'] || changes['userAriaDescribedBy']) {
       this.stateChanges.next();
     }

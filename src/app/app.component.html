@@ -1,19 +1,19 @@
-<h1 class="text-3xl font-bold underline">Hello world!</h1>
-<div
-  class="ml-4 flex h-24 border-2 border-gray-300 p-3 text-gray-700 shadow-md"
->
-  <div
-    class="ml-4 flex h-24 border-2 border-gray-300 p-3 text-gray-700 shadow-md"
-  >
-    <!-- ... -->
+<div class="w-full flex justify-center">
+  <div class="w-full flex flex-col items-center gap-2 max-w-lg">
+    <span class="text-4xl">UI Module</span>
+    <span class="text-2xl">Directives</span>
+
+    <div class="flex">
+      SVG Import test
+      <svg uiIcon name="arrow-down-circle-solid" class="h-5 w-5"></svg>
+    </div>
+
+    <span class="text-2xl">Components</span>
+
+    <ui-select label="Dropdown Selector" [options]="['hello', 'world']" required></ui-select>
+
+    <ui-date label="Date Selector"></ui-date>
+
   </div>
-</div>
-<div
-  class="ml-4 flex h-24 border-2 border-gray-300 p-3 text-gray-700 shadow-md"
->
-  <div
-    class="ml-4 flex h-24 border-2 border-gray-300 p-3 text-gray-700 shadow-md"
-  >
-    <!-- ... -->
-  </div>
+
 </div>

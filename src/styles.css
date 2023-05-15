@@ -16,8 +16,8 @@
   }
 
   .uiField {
-    @apply w-full flex mb-1 py-3 bg-input-bg rounded-md border border-surface-2 ring-0 ring-transparent outline-0
-    outline-offset-0 outline-transparent  shadow-inner-md text-left focus:uiFieldFocus order-2;
+    @apply w-full flex mb-1 py-3 rounded-md border ring-0 ring-transparent outline-0
+    outline-offset-0 outline-transparent text-left focus:uiFieldFocus order-2;
   }
 
   .uiLabel {
