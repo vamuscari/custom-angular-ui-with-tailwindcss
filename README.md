@@ -89,63 +89,48 @@ in the `styles.css` add the following:
   .uiFieldFocus {
     @apply border-sky-500;
   }
-
   .uiFieldError {
     @apply bg-red-50 border border-red-700 shadow-red-400/50;
   }
-
   .uiField[disabled] {
     @apply text-neutral-600/50 bg-neutral-100/25 border border-neutral-400/50 shadow-neutral-400/50 pointer-events-none;
   }
-
   .uiField {
     @apply w-full flex mb-1 py-3 rounded-md border ring-0 ring-transparent outline-0
     outline-offset-0 outline-transparent text-left focus:uiFieldFocus order-2;
   }
-
   .uiLabel {
     @apply flex ml-4 mb-1 text-neutral-700 text-sm font-medium order-1;
   }
-
   .uiField[required] + .uiLabel::after {
     @apply content-['*'] ml-0.5 text-red-700;
   }
-
   .uiFieldError + .uiLabel {
     @apply text-red-700;
   }
-
   .uiFieldDisabled + .uiLabel {
     @apply text-neutral-700/50;
   }
-
   .uiHint {
     @apply block ml-4 mb-1 font-thin text-neutral-500 text-sm tracking-wide order-3;
   }
-
   .uiInput {
     @apply mb-1 px-3
   }
-
   .caret {
     @apply h-5 w-px bg-neutral-300 pointer-events-none;
   }
 }
-
 /* These css classes look for Angulars reactive form identifiers. */
-
 .uiField.ng-invalid.ng-touched:not(.ng-pristine) {
   @apply uiFieldError;
 }
-
 .ng-submitted .ng-invalid {
   @apply uiFieldError;
 }
-
 .uiError .ng-invalid {
   @apply uiFieldError;
 }
-
 ```
 
 ### Reactive Form Requirements.
@@ -194,86 +179,17 @@ The ControlValueAccessor defines an interface that acts as a bridge between the 
 multi is required if there is the possibility for more than one control, which is almost always the case.
 Lastly, NG_VALIDATORS is an injection token for form validators.
 
+
+Next, lets skip over some things and look at the constructor. 
+We have and optional DI for parentFormGroup and a private DI for elementRef. 
+Notice how the element is being pulled from the DOM and reinserted into a new div. 
+This is so that when styles are attached to the input, you are actually modifying the field and not the container that sorts the field.
+There is also a label attribute now that will create the label styling for you based on the component.
 ```ts
 export class UiInput implements OnChanges, OnDestroy {
-  touched = false;
-  valid = true;
-  stateChanges = new Subject<void>();
-  onChange = (_: any) => {
-  };
-  onTouched = () => {
-  };
-
-  get empty() {
-    return !!this.value;
-  }
-
-  @Input()
-  get placeholder(): string {
-    return this._placeholder;
-  }
-
-  set placeholder(value: string) {
-    this._placeholder = value;
-    this.stateChanges.next();
-  }
-
-  private _placeholder!: string;
-
-  @Input()
-  get label(): string {
-    return this._label;
-  }
-
-  set label(value: string) {
-    this._label = value;
-    this._labelElement.innerHTML = value;
-    this.stateChanges.next();
-  }
-
-  private _label!: string;
-
-  @Input('aria-label') ariaLabel: string = '';
-  @Input('aria-labelledby') ariaLabelledby: string | null = null;
-
-  @Input()
-  get required(): boolean {
-    return this._required;
-  }
-
-  set required(value: BooleanInput) {
-    this._required = coerceBooleanProperty(value);
-    this.stateChanges.next();
-  }
-
-  private _required = false;
-
-  @Input()
-  get disabled(): boolean {
-    return this._disabled;
-  }
-
-  set disabled(value: BooleanInput) {
-    this._disabled = coerceBooleanProperty(value);
-    this.stateChanges.next();
-  }
-
-  private _disabled = false;
-
-  @Input()
-  get value(): any {
-    return this._value;
-  }
-
-  set value(val: any) {
-    this._value = val;
-    this.stateChanges.next();
-    this.onChange(val);
-  }
-
-// @ts-ignore
-  private _value: any;
-
+    
+    //...
+  
   private _labelElement: HTMLLabelElement;
   private _parentFormGroup;
 
@@ -295,75 +211,32 @@ export class UiInput implements OnChanges, OnDestroy {
 
     fieldDiv.appendChild(element);
     fieldDiv.appendChild(this._labelElement);
-  }
-
-  get errorState(): boolean {
-    return (
-      (!this.valid && this.touched) ||
-      (!this.valid && this._parentFormGroup?.submitted)
-    );
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-// Updating the disabled state is handled by `mixinDisabled`, but we need to additionally let
-// the parent form field know to run change detection when the disabled state changes.
-    if (changes['disabled'] || changes['userAriaDescribedBy']) {
-      this.stateChanges.next();
-    }
-  }
-
-  setDescribedByIds(ids: string[]) {
-    const controlElement =
-      this._elementRef.nativeElement.querySelector('.select-container')!;
-    controlElement.setAttribute('aria-describedby', ids.join(' '));
-  }
-
-  ngOnDestroy() {
-    this.stateChanges.complete();
-  }
-
-  onContainerClick() {
-  }
-
-  validate(control: AbstractControl) {
-    console.log('validate', control);
-    if (this.required && !this.value) {
-      return {required: true};
-    }
-    return null;
-  }
-
-  writeValue(value: any | null): void {
-    this.value = value;
-  }
-
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
-
-  _handleInput(control: AbstractControl, nextElement?: HTMLInputElement): void {
-//this.autoFocusNext(control, nextElement);
-    this.onChange(this.value);
+    //...
   }
 }
 ```
+
+The rest of the things in this file are mandatory fields required for the controlValueAccessor to work.
 
 ## UI Components
 
 ### UI Base
 
 The `ui-base.ts` has an abstract class component called `UiBase`,
-which holds most of the generic functions and fields implementing a reactive form component.
+which holds most of the generic fields for the ControlValueAccessor.
 The idea is that it should require a little work as possible to make a new reactive form component
 that will fit the needs of whatever you are trying to accomplish.
 
+### Extending UI Base
 
+Extending the base class sounds messy but its not really.
+As long as you don't go past a single level of inheritance everything should be just fine.
+Because of inheritance we don't have to set up the boilerplate code for reactive forms every time.
 
+```ts
+export class UiDate extends UiBase<Date> {
+    //....
+}
+```
+
+There is type declarations for the components with specific information by any would also work if needed.
