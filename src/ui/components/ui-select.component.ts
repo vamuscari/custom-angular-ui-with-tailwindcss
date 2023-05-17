@@ -4,12 +4,10 @@ import {
   EventEmitter,
   HostListener,
   Input,
-  OnChanges,
-  OnDestroy,
   Optional,
   Output,
 } from '@angular/core';
-import { ControlValueAccessor, FormGroupDirective } from '@angular/forms';
+import { FormGroupDirective } from '@angular/forms';
 import { UiBase } from './ui-base';
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -91,10 +89,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
     ]),
   ],
 })
-export class UiSelect
-  extends UiBase<any>
-  implements ControlValueAccessor, OnChanges, OnDestroy
-{
+export class UiSelect extends UiBase<any> {
   id = `ui-select-${this.label}`;
   controlType = 'ui-select';
   panelOpen = false;

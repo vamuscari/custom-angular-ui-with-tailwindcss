@@ -190,10 +190,7 @@ class CalendarDay {
     { provide: NG_VALIDATORS, multi: true, useExisting: UiDate },
   ],
 })
-export class UiDate
-  extends UiBase<Date>
-  implements ControlValueAccessor, OnChanges, OnDestroy
-{
+export class UiDate extends UiBase<Date> implements OnChanges, OnDestroy {
   focused = false;
   months = Months;
   panelOpen = false;
