@@ -170,7 +170,6 @@ export class UiSelect extends UiBase<any> {
     this._multiple = coerceBooleanProperty(value);
     this.stateChanges.next();
   }
-
   private _multiple = false;
 
   @Input()

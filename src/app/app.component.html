@@ -12,7 +12,8 @@
 
     <span class="text-2xl">Components</span>
 
-    <ui-select label="Dropdown Selector" [options]="['hello', 'world']" required></ui-select>
+    <ui-select label="Dropdown Selector" formControlName="selector" [options]="options" required/>
+    <ui-select label="Objects Dropdown Selector" formControlName="selector" [options]="objectOptions" optionsLabelField="userName" required/>
 
     <ui-date label="Date Selector"></ui-date>
 
